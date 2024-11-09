@@ -110,7 +110,7 @@ namespace Labb3.ViewModel
         public List<string> ShuffledAnswers { get; set; }
         public int Score { get; set; }
         public string SelectedAnswer { get; set; } //används kanske inte?
-        public int TotalQuestions => mainWindowViewModel.ActivePack.Questions.Count;
+        public int? TotalQuestions => mainWindowViewModel?.ActivePack?.Questions.Count;
         public int DisplayQuestionNumber => CurrentQuestionIndex + 1;
         public string CorrectAnswer => CurrentQuestion.CorrectAnswer;
         public DelegateCommand AnswerHandlerCommand { get; }
@@ -167,6 +167,7 @@ namespace Labb3.ViewModel
             IsVisible = Visibility.Visible;
             StartQuiz(ActivePack.Questions, ActivePack.TimeLimitInSeconds);
             RaisePropertyChanged(nameof(DisplayQuestionNumber));
+            RaisePropertyChanged(nameof(ActivePack));
         }
 
         private void Timer_Tick(object? sender, EventArgs e)

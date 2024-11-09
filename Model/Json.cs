@@ -43,24 +43,32 @@ namespace Labb3.Model
 
         public async Task<List<QuestionPack>> LoadQuestionPacks()
         {
-            try
+            string filePath = Path.Combine(dataDirectory, "QuestionPacks.json");
+
+            if (!File.Exists(filePath))
             {
-                if (File.Exists(dataDirectory))
-                {
-                    string json = await File.ReadAllTextAsync(dataDirectory);
-                    return JsonSerializer.Deserialize<List<QuestionPack>>(json, options);
-                }
-                else
-                {
-                    Debug.WriteLine("File not found at path: " + dataDirectory); // filen finns
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error loading JSON: {ex.Message}");
+                var startPack = new QuestionPack("Default QuestionPack", Difficulty.Medium, 15);
+                await SaveQuestionPacks(new List<QuestionPack> { startPack });
             }
 
-            return new List<QuestionPack>();
+            try
+            {
+                string json = await File.ReadAllTextAsync(filePath);
+
+                List<QuestionPack> packs = JsonSerializer.Deserialize<List<QuestionPack>>(json, options) ?? new List<QuestionPack>();
+
+                return packs;
+            }
+            catch (JsonException)
+            {
+                return new List<QuestionPack>();
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine($"Error reading the question packs: {ex.Message}");
+                return new List<QuestionPack>();
+            }
         }
+
     }
 }

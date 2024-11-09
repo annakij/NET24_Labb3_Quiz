@@ -17,6 +17,7 @@ namespace Labb3.ViewModel
     {
         private QuestionPackViewModel? _newQuestionPack;
         private QuestionPackViewModel? _activePack;
+        private readonly Json jsonHandler;
         public ObservableCollection<QuestionPackViewModel> Packs { get; set; }
         public PlayerViewModel PlayerViewModel { get; }
         public ConfigurationViewModel ConfigurationViewModel { get; }
@@ -56,14 +57,14 @@ namespace Labb3.ViewModel
 
         public MainWindowViewModel()
         {
-            Packs = new ObservableCollection<QuestionPackViewModel>();
             
-            ActivePack = new QuestionPackViewModel(new QuestionPack("Random Questions Pack", Difficulty.Hard, 30));
-            Packs.Add(ActivePack);
+            Packs = new ObservableCollection<QuestionPackViewModel>();
             PlayerViewModel = new PlayerViewModel(this);
             ConfigurationViewModel = new ConfigurationViewModel(this);
-
             NewQuestionPack = new QuestionPackViewModel(new QuestionPack());
+
+            jsonHandler = new Json();
+            LoadQuestionPacks();
 
             NewPackWindowCommand = new DelegateCommand(ShowWindow);
             CloseWindowCommand = new DelegateCommand(CloseWindow);
@@ -102,22 +103,21 @@ namespace Labb3.ViewModel
             }
         }
 
-        private void ExitGame(object obj)
+        private async void ExitGame(object obj)
         {
+            await SaveQuestionPacksAsync();
             Application.Current.Shutdown();
         }
 
         private void CreateNewPack(object obj)
-        {
-            
+        { 
             Packs.Add(new QuestionPackViewModel(new QuestionPack(
                 NewQuestionPack.Name, 
                 NewQuestionPack.Difficulty, 
                 NewQuestionPack.TimeLimitInSeconds)));
 
             ActivePack = Packs.Last();
-            RaisePropertyChanged();
-            
+            RaisePropertyChanged(); 
         }
 
 
@@ -167,6 +167,39 @@ namespace Labb3.ViewModel
                 mainWindow.WindowStyle = WindowStyle.SingleBorderWindow;
                 mainWindow.WindowState = WindowState.Normal;
             }
+        }
+
+        private async void LoadQuestionPacks()
+        {
+            List<QuestionPack> loadPacks = await jsonHandler.LoadQuestionPacks();
+
+            foreach (var p in loadPacks)
+            {
+                Packs.Add(new QuestionPackViewModel(p));
+            }
+            if (Packs.Any())
+            {
+                ActivePack = Packs.First();
+            }
+            if (ActivePack == null)
+            {
+                ActivePack = new QuestionPackViewModel(new QuestionPack());
+            }
+        }
+
+        public async Task SaveQuestionPacksAsync()
+        {
+            List<QuestionPack> packsToSave = Packs.Select(vm => new QuestionPack(
+
+                vm.Name,
+                vm.Difficulty,
+                vm.TimeLimitInSeconds)
+            {
+                Questions = vm.Questions.ToList()
+            }
+            ).ToList();
+
+            await jsonHandler.SaveQuestionPacks(packsToSave);
         }
     }
 }

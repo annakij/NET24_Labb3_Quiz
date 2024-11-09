@@ -59,9 +59,9 @@ namespace Labb3.ViewModel
             AddButtonCommand = new DelegateCommand(AddButton);
             RemoveButtonCommand = new DelegateCommand(RemoveButton);
 
-            ActivePack.Questions.Add(new Question("Vad heter Sveriges huvudstad?", "Stockholm", "London", "Indien", "Kalle"));
-            ActivePack.Questions.Add(new Question("Vem är bäst?", "Du är", "Någon annan", "Zlatan", "Din mamma"));
-            ActivePack.Questions.Add(new Question("Kerstin är vilken ras?", "Griffon", "Råtta", "Blandras", "Irländsk Varghund"));
+            //ActivePack.Questions.Add(new Question("Vad heter Sveriges huvudstad?", "Stockholm", "London", "Indien", "Kalle"));
+            //ActivePack.Questions.Add(new Question("Vem är bäst?", "Du är", "Någon annan", "Zlatan", "Din mamma"));
+            //ActivePack.Questions.Add(new Question("Kerstin är vilken ras?", "Griffon", "Råtta", "Blandras", "Irländsk Varghund"));
         }
         private void RemoveButton(object obj)
         {
