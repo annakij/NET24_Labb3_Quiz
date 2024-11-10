@@ -15,6 +15,7 @@
       Foreground="#831100">
             <MenuItem Header="_File">
                 <MenuItem Header="_New Questionpack"
+                          InputGestureText="Ctrl+N"
                           Icon="{fa:Icon PlusSquare}"
                           Command="{Binding NewPackWindowCommand}"/>
                 <MenuItem Header="_Select Questionpack"
@@ -31,10 +32,12 @@
                 </MenuItem>
                           
                 <MenuItem Header="Delete Questionpack"
+                          InputGestureText="Ctrl+D"
                           Icon="{fa:Icon MinusSquare}"
                           Command="{Binding DeletePackCommand}"/>
                 <Separator/>
                 <MenuItem Header="_Exit"
+                          InputGestureText="Ctrl+X"
                           Icon="{fa:Icon DoorOpen}"
                           Command="{Binding ExitCommand}"/>
                 
@@ -42,27 +45,33 @@
             <MenuItem Header="Edit"
                       DataContext="{Binding ConfigurationViewModel}">
                 <MenuItem Header="_Add Question"
+                          InputGestureText="Ctrl+A"
                           Icon="{fa:Icon PlusSquare}"
                           Command="{Binding AddButtonCommand}"/>
                 <MenuItem Header="_Remove Question"
+                          InputGestureText="Ctrl+R"
                           Icon="{fa:Icon MinusSquare}"
                           Command="{Binding RemoveButtonCommand}"/>
                 <MenuItem Header="_Pack Options"
+                          InputGestureText="Ctrl+O"
                           Icon="{fa:Icon Sliders}"
                           Command="{Binding PackOptionsWindowCommand}"/>
                 
             </MenuItem>
             <MenuItem Header="View">
                 <MenuItem Header="_Play"
+                          InputGestureText="Ctrl+P"
                           Icon="{fa:Icon Play}"
                           Command="{Binding SelectModeCommand}"
                           CommandParameter="PlayMode"/>
                 <MenuItem Header="_Edit"
+                          InputGestureText="Ctrl+E"
                           Icon="{fa:Icon Pencil}"
                           Command="{Binding SelectModeCommand}"
                           CommandParameter="EditMode"/>
                 <Separator/>
                 <MenuItem Header="_Fullscreen"
+                          InputGestureText="Ctrl+F"
                           Icon="{fa:Icon Maximize}"
                           Command="{Binding ShowFullscreenCommand}"/>
             </MenuItem>

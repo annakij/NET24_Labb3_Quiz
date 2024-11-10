@@ -165,8 +165,9 @@ namespace Labb3.ViewModel
         {
             ResultVisibility = Visibility.Collapsed;
             IsVisible = Visibility.Visible;
-            StartQuiz(ActivePack.Questions, ActivePack.TimeLimitInSeconds);
+            StartQuiz(mainWindowViewModel.ActivePack.Questions, mainWindowViewModel.ActivePack.TimeLimitInSeconds);
             RaisePropertyChanged(nameof(DisplayQuestionNumber));
+            RaisePropertyChanged(nameof(TotalQuestions));
             RaisePropertyChanged(nameof(ActivePack));
         }
 
@@ -197,7 +198,7 @@ namespace Labb3.ViewModel
             if (selectedAnswer == CurrentQuestion.CorrectAnswer)
             {
                 SetBorderBrush(selectedIndex, Brushes.Green);
-                Score++; //debug, allt kopplas och propertys uppdateras! Fel i binding???
+                Score++; //debug, allt kopplas och propertys uppdateras! Har 12 bindingerrors här lol kms hjälp plz
             }
             else
             {
@@ -227,6 +228,7 @@ namespace Labb3.ViewModel
                 TimeRemaining = timeLimitInSeconds;
                 timer.Start();
                 RaisePropertyChanged(nameof(ShuffledAnswers));
+                RaisePropertyChanged(nameof(TotalQuestions));
             }
         }
         public void LoadNextQuestion()

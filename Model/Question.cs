@@ -8,6 +8,12 @@ namespace Labb3.Model
 {
     internal class Question
     {
+
+        public Question()
+        {
+            IncorrectAnswers = new string[3];
+        }
+
         public Question(string query, string correctAnswer, string incorrectAnswer1, string incorrectAnswer2, string incorrectAnswer3)
         {
             Query = query;
