@@ -3,7 +3,7 @@ using Labb3.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
+using System.Windows.Media;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -97,19 +97,8 @@ namespace Labb3.ViewModel
                 RaisePropertyChanged(nameof(ShuffledAnswers));
             }
         }
-        public bool? IsAnswerCorrect
-        {
-            get => _isAnswerCorrect;
-            set
-            {
-                _isAnswerCorrect = value;
-                RaisePropertyChanged(nameof(IsAnswerCorrect));
-            }
-        }
-
         public List<string> ShuffledAnswers { get; set; }
         public int Score { get; set; }
-        public string SelectedAnswer { get; set; } //används kanske inte?
         public int? TotalQuestions => mainWindowViewModel?.ActivePack?.Questions.Count;
         public int DisplayQuestionNumber => CurrentQuestionIndex + 1;
         public string CorrectAnswer => CurrentQuestion.CorrectAnswer;
@@ -150,7 +139,6 @@ namespace Labb3.ViewModel
             ResultVisibility = Visibility.Hidden;
             ShuffledAnswers = new List<string>();
 
-
             timer = new DispatcherTimer 
             { 
                 Interval = TimeSpan.FromSeconds(1)
@@ -186,10 +174,7 @@ namespace Labb3.ViewModel
 
         private async void HandleAnswer(object obj)
         {
-            Answer0BorderBrush = Brushes.LightBlue;
-            Answer1BorderBrush = Brushes.LightBlue;
-            Answer2BorderBrush = Brushes.LightBlue;
-            Answer3BorderBrush = Brushes.LightBlue;
+            ResetBorderBrush();
 
             string selectedAnswer = (string)obj;
             int selectedIndex = ShuffledAnswers.IndexOf(selectedAnswer);
@@ -198,7 +183,7 @@ namespace Labb3.ViewModel
             if (selectedAnswer == CurrentQuestion.CorrectAnswer)
             {
                 SetBorderBrush(selectedIndex, Brushes.Green);
-                Score++; //debug, allt kopplas och propertys uppdateras! Har 12 bindingerrors här lol kms hjälp plz
+                Score++;
             }
             else
             {
@@ -209,6 +194,7 @@ namespace Labb3.ViewModel
             RaisePropertyChanged(nameof(Score));
             await Task.Delay(1000);
             timer.Stop();
+            ResetBorderBrush();
             LoadNextQuestion();
             
         }
@@ -235,13 +221,13 @@ namespace Labb3.ViewModel
         {
             if (CurrentQuestionIndex < TotalQuestions -1)
             {
-                IsAnswerCorrect = null;
                 CurrentQuestionIndex++;
                 CurrentQuestion = ShuffledQuestions[CurrentQuestionIndex];
 
                 RaisePropertyChanged(nameof(CurrentQuestionIndex));
                 RaisePropertyChanged(nameof(ShuffledAnswers));
                 RaisePropertyChanged(nameof(DisplayQuestionNumber));
+                RaisePropertyChanged(nameof(Score));
 
                 TimeRemaining = mainWindowViewModel.ActivePack.TimeLimitInSeconds;
                 timer.Start();
@@ -262,6 +248,18 @@ namespace Labb3.ViewModel
                 case 2: Answer2BorderBrush = color; break;
                 case 3: Answer3BorderBrush = color; break;
             }
+        }
+        private void ResetBorderBrush()
+        {
+            Answer0BorderBrush = Brushes.LightBlue;
+            Answer1BorderBrush = Brushes.LightBlue;
+            Answer2BorderBrush = Brushes.LightBlue;
+            Answer3BorderBrush = Brushes.LightBlue;
+
+            RaisePropertyChanged(nameof(Answer0BorderBrush));
+            RaisePropertyChanged(nameof(Answer1BorderBrush));
+            RaisePropertyChanged(nameof(Answer2BorderBrush));
+            RaisePropertyChanged(nameof(Answer3BorderBrush));
         }
         private List<string> ShuffleAnswers(Question q)
         {
