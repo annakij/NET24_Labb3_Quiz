@@ -45,6 +45,8 @@
                        FontSize="30"
                        FontWeight="DemiBold"
                        Foreground="#831100"
+                       MaxWidth="700"
+                       TextWrapping="Wrap"
                        HorizontalAlignment="Center"/>
             
             <StackPanel Orientation="Horizontal"

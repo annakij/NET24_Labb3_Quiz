@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
-             xmlns:local="clr-namespace:Labb3.Views"
+             xmlns:local="clr-namespace:Labb3.Views" xmlns:viewmodel="clr-namespace:Labb3.ViewModel" 
+             d:DataContext="{d:DesignInstance Type=viewmodel:ConfigurationViewModel}"
              DataContext="{Binding ConfigurationViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -17,7 +18,7 @@
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="60"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
@@ -58,18 +59,20 @@
                     Grid.Row="0"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Left"
-                    Margin="20, 0, 10, 0">
+                    Margin="20, 0, 10, 2">
 
-            <Label Content="{Binding ActivePack.Name}"
+            <TextBlock Text="{Binding ActivePack.Name}"
                    FontSize="18"
                    Foreground="#831100"
-                   FontWeight="DemiBold"/>
+                   FontWeight="DemiBold"
+                   TextWrapping="Wrap"
+                   MaxWidth="200"/>
         </StackPanel>
         
         <ListBox Grid.Column="0"
                  Grid.Row="1"
                  Margin="20, 0, 20, 0"
-                 MinHeight="400"
+                 MinHeight="360"
                  Background="BlanchedAlmond"
                  ItemsSource="{Binding ActivePack.Questions}"
                  SelectedItem="{Binding ActiveQuestion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
