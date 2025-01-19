@@ -19,7 +19,30 @@ namespace Labb3.ViewModel
         private readonly MainWindowViewModel? mainWindowViewModel;
         public QuestionPackViewModel? ActivePack { get => mainWindowViewModel.ActivePack; }
         public Visibility EditorVisibility => ActiveQuestion == null ? Visibility.Collapsed : Visibility.Visible;
-        
+
+        private ObservableCollection<Category> _categories;
+
+        public ObservableCollection<Category> Categories
+        {
+            get => _categories;
+            set
+            {
+                _categories = value;
+                RaisePropertyChanged(nameof(Categories));
+            }
+        }
+
+        private Category _activeCategory;
+        public Category ActiveCategory
+        {
+            get => _activeCategory;
+            set
+            {
+                _activeCategory = value;
+                RaisePropertyChanged(nameof(ActiveCategory));
+            }
+        }
+
         private Question? _activeQuestion;
         public Question? ActiveQuestion
         {
@@ -46,6 +69,7 @@ namespace Labb3.ViewModel
         }
         public ObservableCollection<Difficulty> DifficultyOptions { get; }
         public DelegateCommand PackOptionsWindowCommand { get; }
+        public DelegateCommand CategoryWindowCommand { get; }
         public DelegateCommand AddButtonCommand { get; }
         public DelegateCommand RemoveButtonCommand { get; }
 
@@ -56,12 +80,10 @@ namespace Labb3.ViewModel
 
             DifficultyOptions = new ObservableCollection<Difficulty>((Difficulty[])Enum.GetValues(typeof(Difficulty)));
             PackOptionsWindowCommand = new DelegateCommand(ShowWindow);
+            CategoryWindowCommand = new DelegateCommand(ShowCategoryWindow);
             AddButtonCommand = new DelegateCommand(AddButton);
             RemoveButtonCommand = new DelegateCommand(RemoveButton);
 
-            //ActivePack.Questions.Add(new Question("Vad heter Sveriges huvudstad?", "Stockholm", "London", "Indien", "Kalle"));
-            //ActivePack.Questions.Add(new Question("Vem är bäst?", "Du är", "Någon annan", "Zlatan", "Din mamma"));
-            //ActivePack.Questions.Add(new Question("Kerstin är vilken ras?", "Griffon", "Råtta", "Blandras", "Irländsk Varghund"));
         }
         private void RemoveButton(object obj)
         {
@@ -75,6 +97,15 @@ namespace Labb3.ViewModel
             ActiveQuestion = newQuestion;
             RaisePropertyChanged(nameof(ActivePack.Questions));
             RaisePropertyChanged(nameof(ActiveQuestion));
+        }
+        private void ShowCategoryWindow(object obj)
+        {
+            CategoryDialog categoryDialog = new CategoryDialog
+            {
+                DataContext = this,
+                Owner = Application.Current.MainWindow
+            };
+            categoryDialog.ShowDialog();
         }
         private void ShowWindow(object obj)
         {

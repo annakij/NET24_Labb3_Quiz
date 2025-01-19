@@ -62,11 +62,11 @@
                     Margin="20, 0, 10, 2">
 
             <TextBlock Text="{Binding ActivePack.Name}"
-                   FontSize="18"
-                   Foreground="#831100"
-                   FontWeight="DemiBold"
-                   TextWrapping="Wrap"
-                   MaxWidth="200"/>
+                       FontSize="18"
+                       Foreground="#831100"
+                       FontWeight="DemiBold"
+                       TextWrapping="Wrap"
+                       MaxWidth="200"/>
         </StackPanel>
         
         <ListBox Grid.Column="0"

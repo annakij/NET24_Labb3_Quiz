@@ -19,6 +19,7 @@ namespace Labb3.ViewModel
         private QuestionPackViewModel? _activePack;
         private readonly Json jsonHandler;
         public ObservableCollection<QuestionPackViewModel> Packs { get; set; }
+        public ObservableCollection<Category> Categories { get; set; }
         public PlayerViewModel PlayerViewModel { get; }
         public ConfigurationViewModel ConfigurationViewModel { get; }
         public DelegateCommand NewPackWindowCommand { get; }
@@ -62,6 +63,7 @@ namespace Labb3.ViewModel
             PlayerViewModel = new PlayerViewModel(this);
             ConfigurationViewModel = new ConfigurationViewModel(this);
             NewQuestionPack = new QuestionPackViewModel(new QuestionPack());
+            Categories = new ObservableCollection<Category>();
 
             jsonHandler = new Json();
             LoadQuestionPacks();
@@ -75,6 +77,7 @@ namespace Labb3.ViewModel
             SelectModeCommand = new DelegateCommand(SelectMode);
             ShowFullscreenCommand = new DelegateCommand(ShowFullscreen);
         }
+
 
         private void SelectMode(object obj)
         {

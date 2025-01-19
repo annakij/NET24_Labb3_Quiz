@@ -4,15 +4,28 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
-             xmlns:local="clr-namespace:Labb3.Views"
+             xmlns:local="clr-namespace:Labb3.Views" xmlns:viewmodel="clr-namespace:Labb3.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
-
+    
     <Grid>
         
+        <Grid.InputBindings>
+            <KeyBinding Key="N" Modifiers="Ctrl" Command="{Binding NewPackWindowCommand}"/>
+            <KeyBinding Key="D" Modifiers="Ctrl" Command="{Binding DeletePackCommand}"/>
+            <KeyBinding Key="X" Modifiers="Ctrl" Command="{Binding ExitCommand}"/>
+            <KeyBinding Key="A" Modifiers="Ctrl" Command="{Binding ConfigurationViewModel.AddButtonCommand}"/>
+            <KeyBinding Key="R" Modifiers="Ctrl" Command="{Binding ConfigurationViewModel.RemoveButtonCommand}"/>
+            <KeyBinding Key="O" Modifiers="Ctrl" Command="{Binding ConfigurationViewModel.PackOptionsWindowCommand}"/>
+            <KeyBinding Key="G" Modifiers="Ctrl" Command="{Binding ConfigurationViewModel.CategoryWindowCommand}"/>
+            <KeyBinding Key="P" Modifiers="Ctrl" Command="{Binding SelectModeCommand}" CommandParameter="PlayMode"/>
+            <KeyBinding Key="E" Modifiers="Ctrl" Command="{Binding SelectModeCommand}" CommandParameter="EditMode"/>
+            <KeyBinding Key="F" Modifiers="Ctrl" Command="{Binding ShowFullscreenCommand}"/>
+        </Grid.InputBindings>
+
         <Menu VerticalAlignment="Top"
-      Background="BlanchedAlmond"
-      Foreground="#831100">
+              Background="BlanchedAlmond"
+              Foreground="#831100">
             <MenuItem Header="_File">
                 <MenuItem Header="_New Questionpack"
                           InputGestureText="Ctrl+N"
@@ -56,7 +69,11 @@
                           InputGestureText="Ctrl+O"
                           Icon="{fa:Icon Sliders}"
                           Command="{Binding PackOptionsWindowCommand}"/>
-                
+                <MenuItem Header="_Edit Categories"
+                          InputGestureText="Ctrl+G"
+                          Icon="{fa:Icon gear}"
+                          Command="{Binding CategoryWindowCommand}"/>
+
             </MenuItem>
             <MenuItem Header="View">
                 <MenuItem Header="_Play"
