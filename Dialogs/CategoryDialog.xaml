@@ -28,15 +28,16 @@
                      Margin="10, 0"
                      SelectionMode="Single"
                      TabIndex="1"
-                     SelectedItem="{Binding SelectedCategory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     ItemsSource="{Binding Categories}" >
-                <ListBox.ItemTemplate>
+                     SelectedItem="{Binding SelectedCategory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged }"
+                     ItemsSource="{Binding Categories}" 
+                     DisplayMemberPath="Name">
+                <!--<ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
                             <TextBlock Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                     </DataTemplate>
-                </ListBox.ItemTemplate>
+                </ListBox.ItemTemplate>-->
             </ListBox>
             
             <StackPanel Grid.Column="0"

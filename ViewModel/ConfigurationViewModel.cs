@@ -1,6 +1,7 @@
 ﻿using Labb3.Commands;
 using Labb3.Dialogs;
 using Labb3.Model;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,6 +18,7 @@ namespace Labb3.ViewModel
     internal class ConfigurationViewModel : ViewModelBase
     {
         private readonly MainWindowViewModel? mainWindowViewModel;
+        public MongoDb dbHandler { get => mainWindowViewModel.dbHandler; }
         public QuestionPackViewModel? ActivePack { get => mainWindowViewModel.ActivePack; }
         public Visibility EditorVisibility => ActiveQuestion == null ? Visibility.Collapsed : Visibility.Visible;
 
@@ -90,7 +92,7 @@ namespace Labb3.ViewModel
             this.mainWindowViewModel = mainWindowViewModel;
             IsVisible = Visibility.Visible;
 
-            Categories = new ObservableCollection<Category>();
+            Categories = new ObservableCollection<Category>(mainWindowViewModel.Categories);
             DifficultyOptions = new ObservableCollection<Difficulty>((Difficulty[])Enum.GetValues(typeof(Difficulty)));
 
             PackOptionsWindowCommand = new DelegateCommand(ShowWindow);
@@ -107,7 +109,12 @@ namespace Labb3.ViewModel
             if (obj is null) return;
             else
             {
+                var filter = Builders<Category>.Filter.Eq(c => c.Name, obj);
+                dbHandler.Categories.DeleteOne(filter);
                 Categories.Remove(SelectedCategory);
+
+                RaisePropertyChanged(nameof(SelectedCategory));
+                RaisePropertyChanged(nameof(Categories));
             }
         }
 
@@ -115,6 +122,8 @@ namespace Labb3.ViewModel
         {
             var newCategory = new Category(NewCategory);
             Categories.Add(newCategory);
+
+            dbHandler.Categories.InsertOne(newCategory);
 
             NewCategory = string.Empty;
             RaisePropertyChanged(nameof(NewCategory));

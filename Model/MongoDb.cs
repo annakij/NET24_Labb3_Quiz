@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace Labb3.Model;
 
-internal class MongoDbContext
+internal class MongoDb
 {
     private readonly IMongoDatabase _database;
 
-    public MongoDbContext(string connectionString, string databaseString)
+    public MongoDb(string connectionString, string databaseString)
     {
 
 
         var client = new MongoClient(connectionString);
-        var _database = client.GetDatabase(databaseString);
+        _database = client.GetDatabase(databaseString);
 
         Categories = _database.GetCollection<Category>("Categories");
         QuestionPacks = _database.GetCollection<QuestionPack>("QuestionPacks");
@@ -36,7 +36,8 @@ internal class MongoDbContext
             [
                 new Category("History"),
                 new Category("Programming"),
-                new Category("Other")
+                new Category("Other"),
+                new Category("Animals")
             ]);
         }
         
@@ -47,7 +48,7 @@ internal class MongoDbContext
                 Name = "Default Pack",
                 Difficulty = Difficulty.Medium,
                 TimeLimitInSeconds = 20,
-                Category = new("Animals"),
+                Category = Categories.Find(c => c.Name == "Animals").First(),
                 Questions = new List<Question> {
                     new Question
                     {

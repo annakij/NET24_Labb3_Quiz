@@ -16,10 +16,11 @@ namespace Labb3.ViewModel
 {
     internal class MainWindowViewModel : ViewModelBase
     {
-        private QuestionPackViewModel? _newQuestionPack;
-        private QuestionPackViewModel? _activePack;
-        private readonly MongoDbContext dbContext;
+
+        public MongoDb dbHandler {  get; set; }
+
         private readonly Json jsonHandler;
+
         public ObservableCollection<QuestionPackViewModel> Packs { get; set; }
         public ObservableCollection<Category> Categories { get; set; }
         public PlayerViewModel PlayerViewModel { get; }
@@ -33,6 +34,8 @@ namespace Labb3.ViewModel
         public DelegateCommand SelectModeCommand { get; }
         public DelegateCommand ShowFullscreenCommand { get; }
 
+
+        private QuestionPackViewModel? _newQuestionPack;
         public QuestionPackViewModel? NewQuestionPack
         {
             get
@@ -47,6 +50,7 @@ namespace Labb3.ViewModel
         }
 
         
+        private QuestionPackViewModel? _activePack;
 		public QuestionPackViewModel? ActivePack
 		{
 			get => _activePack;
@@ -65,15 +69,13 @@ namespace Labb3.ViewModel
             PlayerViewModel = new PlayerViewModel(this);
             ConfigurationViewModel = new ConfigurationViewModel(this);
             NewQuestionPack = new QuestionPackViewModel(new QuestionPack());
-            Categories = new ObservableCollection<Category>();
 
-            string connectionString = ""; //add connectionstring here
+            string connectionString = "mongodb+srv://dbUser:Pologg123@cluster0.ccdzb.mongodb.net/";
             string databaseName = "AnnaKijlstra";
-            dbContext = new MongoDbContext(connectionString, databaseName);
-
+            dbHandler = new MongoDb(connectionString, databaseName);
            
-            //jsonHandler = new Json(); // If tasked to save to json file on local disk
-            //LoadQuestionPacks();
+            //jsonHandler = new Json(); // If tasked to save to json file on local disk - uncomment
+            //LoadQuestionPacks(); // - " -
 
             LoadData();
 
@@ -89,10 +91,11 @@ namespace Labb3.ViewModel
 
         private async void LoadData() 
         {
-            var categories = await dbContext.Categories.Find(_ => true).ToListAsync();
-            Categories = new ObservableCollection<Category>(categories);
+            var categories = await dbHandler.Categories.Find(_ => true).ToListAsync();
+            Categories = new ObservableCollection<Category>(
+                categories.Select(c => new Category(c.Name)));
 
-            var questionPacks = await dbContext.QuestionPacks.Find(_ => true).ToListAsync();
+            var questionPacks = await dbHandler.QuestionPacks.Find(_ => true).ToListAsync();
             Packs = new ObservableCollection<QuestionPackViewModel>(
             questionPacks.Select(p => new QuestionPackViewModel(p)));
 
@@ -100,7 +103,20 @@ namespace Labb3.ViewModel
         }
         private async Task SaveDataAsync()
         {
-            throw new NotImplementedException();
+            List<QuestionPack> packsToSave = Packs.Select(p => new QuestionPack(
+
+                p.Name,
+                p.Difficulty,
+                p.TimeLimitInSeconds,
+                p.Category
+                )
+            {
+                Questions = p.Questions.ToList()
+            }
+            ).ToList();
+
+            await dbHandler.QuestionPacks.DeleteManyAsync(_ => true);
+            await dbHandler.QuestionPacks.InsertManyAsync(packsToSave);
         }
 
         private void SelectMode(object obj)
@@ -132,7 +148,7 @@ namespace Labb3.ViewModel
 
         private async void ExitGame(object obj)
         {
-            await SaveQuestionPacksAsync();
+            // await SaveQuestionPacksAsync(); //JSON funcionality
             await SaveDataAsync();
             Application.Current.Shutdown();
         }
@@ -149,8 +165,6 @@ namespace Labb3.ViewModel
             ActivePack = Packs.Last();
             RaisePropertyChanged(); 
         }
-
-
         private bool CanDeletePack(object? arg)
         {
             if (ActivePack != null)
@@ -199,7 +213,7 @@ namespace Labb3.ViewModel
             }
         }
 
-        private async void LoadQuestionPacks()
+        private async void LoadQuestionPacks() //JSON functionality
         {
             List<QuestionPack> loadPacks = await jsonHandler.LoadQuestionPacks();
 
@@ -217,7 +231,7 @@ namespace Labb3.ViewModel
             }
         }
 
-        public async Task SaveQuestionPacksAsync()
+        public async Task SaveQuestionPacksAsync() // JSON funtionality
         {
             List<QuestionPack> packsToSave = Packs.Select(p => new QuestionPack(
 
