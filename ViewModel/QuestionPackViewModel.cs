@@ -25,6 +25,15 @@ namespace Labb3.ViewModel
                 RaisePropertyChanged();
             }
         }
+        public Category Category
+        {
+            get => model.Category;
+            set
+            {
+                model.Category = value;
+                RaisePropertyChanged();
+            }
+        }
         public Difficulty Difficulty
         {
             get => model.Difficulty;

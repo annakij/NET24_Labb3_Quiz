@@ -4,10 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Labb3.Dialogs" 
-        DataContext="{Binding ConfigurationViewModel}"
+        xmlns:viewmodel="clr-namespace:Labb3.ViewModel" 
+        d:DataContext="{d:DesignInstance Type=viewmodel:ConfigurationViewModel}"
         WindowStartupLocation="CenterOwner"
         mc:Ignorable="d"
-        Title="Pack Options" Height="250" Width="250" ResizeMode="NoResize">
+        Height="320" Width="250" ResizeMode="NoResize" WindowStyle="None">
 
     
     <Grid Background="#831100">
@@ -26,6 +27,15 @@
                       Margin="0, 0, 0, 10"
                       ItemsSource="{Binding DifficultyOptions}"
                       SelectedItem="{Binding ActivePack.Difficulty, Mode=TwoWay}">
+            </ComboBox>
+
+            <Label Content="Category"
+                   Foreground="BlanchedAlmond"
+                   FontWeight="DemiBold"/>
+            <ComboBox Background="BlanchedAlmond"
+                      Margin="0, 0, 0, 10"
+                      ItemsSource="{Binding Categories}" DisplayMemberPath="Name"
+                      SelectedItem="{Binding ActivePack.Category, Mode=TwoWay}">
             </ComboBox>
 
             <StackPanel Orientation="Horizontal">
@@ -47,6 +57,12 @@
                     IsSnapToTickEnabled="True"
                     Maximum="60"
                     Minimum="0" />
+            
+            <Button Content="Close"
+                    Background="BlanchedAlmond"
+                    FontWeight="DemiBold"
+                    Margin="10, 20"
+                    Click="Button_Click"/>
 
         </StackPanel>
     </Grid>

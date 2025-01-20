@@ -98,24 +98,29 @@
 
             <Label Content="Question:"/>
             <TextBox x:Name="questionBox"
+                     Background="BlanchedAlmond"
                      Height="80" 
                      Text="{Binding ActiveQuestion.Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
             <Label Content="Correct answer:" 
                    Margin="0, 30, 0, 0" />
             <TextBox x:Name="correctAnswerBox"
+                     Background="BlanchedAlmond"
                      Text="{Binding ActiveQuestion.CorrectAnswer}"/>
 
             <Label Content="First incorrect answer:" />
             <TextBox x:Name="wrongFirstBox"
+                     Background="BlanchedAlmond"
                      Text="{Binding ActiveQuestion.IncorrectAnswers[0]}"/>
 
             <Label Content="Second incorrect answer:" />
             <TextBox x:Name="wrongSecondBox"
+                     Background="BlanchedAlmond"
                      Text="{Binding ActiveQuestion.IncorrectAnswers[1]}"/>
 
             <Label Content="Third incorrect answer:" />
             <TextBox x:Name="wrongThirdBox"
+                     Background="BlanchedAlmond"
                      Text="{Binding ActiveQuestion.IncorrectAnswers[2]}"/>
 
             <StackPanel Orientation="Horizontal"

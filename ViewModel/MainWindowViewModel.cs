@@ -117,7 +117,8 @@ namespace Labb3.ViewModel
             Packs.Add(new QuestionPackViewModel(new QuestionPack(
                 NewQuestionPack.Name, 
                 NewQuestionPack.Difficulty, 
-                NewQuestionPack.TimeLimitInSeconds)));
+                NewQuestionPack.TimeLimitInSeconds,
+                NewQuestionPack.Category)));
 
             ActivePack = Packs.Last();
             RaisePropertyChanged(); 
@@ -192,13 +193,15 @@ namespace Labb3.ViewModel
 
         public async Task SaveQuestionPacksAsync()
         {
-            List<QuestionPack> packsToSave = Packs.Select(vm => new QuestionPack(
+            List<QuestionPack> packsToSave = Packs.Select(p => new QuestionPack(
 
-                vm.Name,
-                vm.Difficulty,
-                vm.TimeLimitInSeconds)
+                p.Name,
+                p.Difficulty,
+                p.TimeLimitInSeconds,
+                p.Category
+                )
             {
-                Questions = vm.Questions.ToList()
+                Questions = p.Questions.ToList()
             }
             ).ToList();
 

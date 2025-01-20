@@ -31,15 +31,25 @@ namespace Labb3.ViewModel
                 RaisePropertyChanged(nameof(Categories));
             }
         }
-
-        private Category _activeCategory;
-        public Category ActiveCategory
+        private string _newCategory;
+        public string NewCategory
         {
-            get => _activeCategory;
+            get => _newCategory;
             set
             {
-                _activeCategory = value;
-                RaisePropertyChanged(nameof(ActiveCategory));
+                _newCategory = value;
+                RaisePropertyChanged(nameof(NewCategory));
+            }
+        }
+
+        private Category? _selectedCategory;
+        public Category? SelectedCategory
+        {
+            get => _selectedCategory;
+            set
+            {
+                _selectedCategory = value;
+                RaisePropertyChanged(nameof(SelectedCategory));
             }
         }
 
@@ -72,19 +82,45 @@ namespace Labb3.ViewModel
         public DelegateCommand CategoryWindowCommand { get; }
         public DelegateCommand AddButtonCommand { get; }
         public DelegateCommand RemoveButtonCommand { get; }
+        public DelegateCommand AddCategoryCommand { get; }
+        public DelegateCommand RemoveCategoryCommand { get; }
 
         public ConfigurationViewModel(MainWindowViewModel? mainWindowViewModel)
         {
             this.mainWindowViewModel = mainWindowViewModel;
             IsVisible = Visibility.Visible;
 
+            Categories = new ObservableCollection<Category>();
             DifficultyOptions = new ObservableCollection<Difficulty>((Difficulty[])Enum.GetValues(typeof(Difficulty)));
+
             PackOptionsWindowCommand = new DelegateCommand(ShowWindow);
             CategoryWindowCommand = new DelegateCommand(ShowCategoryWindow);
             AddButtonCommand = new DelegateCommand(AddButton);
             RemoveButtonCommand = new DelegateCommand(RemoveButton);
+            AddCategoryCommand = new DelegateCommand(AddCategory);
+            RemoveCategoryCommand = new DelegateCommand(RemoveCategory);
 
         }
+
+        private void RemoveCategory(object obj)
+        {
+            if (obj is null) return;
+            else
+            {
+                Categories.Remove(SelectedCategory);
+            }
+        }
+
+        private void AddCategory(object obj)
+        {
+            var newCategory = new Category(NewCategory);
+            Categories.Add(newCategory);
+
+            NewCategory = string.Empty;
+            RaisePropertyChanged(nameof(NewCategory));
+            RaisePropertyChanged(nameof(Categories));
+        }
+
         private void RemoveButton(object obj)
         {
             ActivePack.Questions.Remove(ActiveQuestion);

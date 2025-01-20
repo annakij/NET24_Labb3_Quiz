@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:Labb3.Dialogs"
         mc:Ignorable="d"
         DataContext="{Binding MainWindowViewModel}"
-        Title="New Question Pack" Height="280" Width="250"
-        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+        Title="New Question Pack" Height="320" Width="250"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize" WindowStyle="None">
 
     <Grid Background="#831100">
         <StackPanel Margin="20">
@@ -27,7 +27,17 @@
                       ItemsSource="{Binding DifficultyOptions}"
                       SelectedItem="{Binding NewQuestionPack.Difficulty}"> 
             </ComboBox>
-            
+
+            <Label Content="Category"
+                   Foreground="BlanchedAlmond"
+                   FontWeight="DemiBold"/>
+            <ComboBox Background="BlanchedAlmond"
+                      Margin="0, 0, 0, 10" 
+                      DataContext="{Binding ConfigurationViewModel}"
+                      ItemsSource="{Binding Categories}" DisplayMemberPath="Name"
+                      SelectedItem="{Binding NewQuestionPack.Category}">
+            </ComboBox>
+
             <StackPanel Orientation="Horizontal">
                 
             <Label Content="Time Limit [seconds] :"
