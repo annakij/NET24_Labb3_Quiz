@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -20,10 +22,22 @@ internal class QuestionPack
         Category = category;
     }
 
+    [BsonElement("_id")] [BsonRepresentation(BsonType.ObjectId)]
+    public string _id {  get; set; }
+
+    [BsonElement("name")]
     public string Name { get; set; }
+
+    [BsonElement("difficulty")]
     public Difficulty Difficulty { get; set; }
+
+    [BsonElement("timelimit")]
     public int TimeLimitInSeconds { get; set; }
+
+    [BsonElement("questions")]
     public List<Question> Questions { get; set; }
+
+    [BsonElement("category")]
     public Category Category { get; set; }
 
 }

@@ -49,7 +49,7 @@
                           Icon="{fa:Icon MinusSquare}"
                           Command="{Binding DeletePackCommand}"/>
                 <Separator/>
-                <MenuItem Header="_Exit"
+                <MenuItem Header="_Exit + Save Changes"
                           InputGestureText="Ctrl+X"
                           Icon="{fa:Icon DoorOpen}"
                           Command="{Binding ExitCommand}"/>

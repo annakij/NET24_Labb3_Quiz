@@ -2,6 +2,7 @@
 using Labb3.Dialogs;
 using Labb3.Model;
 using Labb3.Views;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,6 +18,7 @@ namespace Labb3.ViewModel
     {
         private QuestionPackViewModel? _newQuestionPack;
         private QuestionPackViewModel? _activePack;
+        private readonly MongoDbContext dbContext;
         private readonly Json jsonHandler;
         public ObservableCollection<QuestionPackViewModel> Packs { get; set; }
         public ObservableCollection<Category> Categories { get; set; }
@@ -65,8 +67,15 @@ namespace Labb3.ViewModel
             NewQuestionPack = new QuestionPackViewModel(new QuestionPack());
             Categories = new ObservableCollection<Category>();
 
-            jsonHandler = new Json();
-            LoadQuestionPacks();
+            string connectionString = ""; //add connectionstring here
+            string databaseName = "AnnaKijlstra";
+            dbContext = new MongoDbContext(connectionString, databaseName);
+
+           
+            //jsonHandler = new Json(); // If tasked to save to json file on local disk
+            //LoadQuestionPacks();
+
+            LoadData();
 
             NewPackWindowCommand = new DelegateCommand(ShowWindow);
             CloseWindowCommand = new DelegateCommand(CloseWindow);
@@ -78,6 +87,21 @@ namespace Labb3.ViewModel
             ShowFullscreenCommand = new DelegateCommand(ShowFullscreen);
         }
 
+        private async void LoadData() 
+        {
+            var categories = await dbContext.Categories.Find(_ => true).ToListAsync();
+            Categories = new ObservableCollection<Category>(categories);
+
+            var questionPacks = await dbContext.QuestionPacks.Find(_ => true).ToListAsync();
+            Packs = new ObservableCollection<QuestionPackViewModel>(
+            questionPacks.Select(p => new QuestionPackViewModel(p)));
+
+            ActivePack = Packs.FirstOrDefault();
+        }
+        private async Task SaveDataAsync()
+        {
+            throw new NotImplementedException();
+        }
 
         private void SelectMode(object obj)
         {
@@ -109,8 +133,10 @@ namespace Labb3.ViewModel
         private async void ExitGame(object obj)
         {
             await SaveQuestionPacksAsync();
+            await SaveDataAsync();
             Application.Current.Shutdown();
         }
+
 
         private void CreateNewPack(object obj)
         { 

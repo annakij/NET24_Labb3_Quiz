@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,8 +22,13 @@ namespace Labb3.Model
             IncorrectAnswers = new string[3] { incorrectAnswer1, incorrectAnswer2, incorrectAnswer3 };
         }
 
+        [BsonElement("query")]
         public string Query { get; set; }
+
+        [BsonElement("correctanswer")]
         public string CorrectAnswer { get; set; }
+
+        [BsonElement("incorrectanswers")]
         public string[] IncorrectAnswers { get; set; }
 
 
