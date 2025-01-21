@@ -16,11 +16,9 @@ namespace Labb3.ViewModel
 {
     internal class MainWindowViewModel : ViewModelBase
     {
-
         public MongoDb dbHandler {  get; set; }
 
         private readonly Json jsonHandler;
-
 
         public ObservableCollection<Category> Categories { get; set; }
         public PlayerViewModel PlayerViewModel { get; }
@@ -82,7 +80,7 @@ namespace Labb3.ViewModel
         public MainWindowViewModel()
         {
             
-            string connectionString = "";
+            string connectionString = "mongodb://localhost:27017/";
             string databaseName = "AnnaKijlstra";
             dbHandler = new MongoDb(connectionString, databaseName);
 
