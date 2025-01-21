@@ -57,6 +57,7 @@ namespace Labb3.ViewModel
 			set 
 			{ 
 				_activePack = value;
+                _activePack.Category = Categories.FirstOrDefault(c => c.Name == _activePack.Category.Name);
 				RaisePropertyChanged();
                 ConfigurationViewModel?.RaisePropertyChanged("ActivePack");
 			}
@@ -65,15 +66,15 @@ namespace Labb3.ViewModel
         public MainWindowViewModel()
         {
             
+            string connectionString = "";
+            string databaseName = "AnnaKijlstra";
+            dbHandler = new MongoDb(connectionString, databaseName);
+
             Packs = new ObservableCollection<QuestionPackViewModel>();
             PlayerViewModel = new PlayerViewModel(this);
             ConfigurationViewModel = new ConfigurationViewModel(this);
             NewQuestionPack = new QuestionPackViewModel(new QuestionPack());
 
-            string connectionString = "mongodb+srv://dbUser:Pologg123@cluster0.ccdzb.mongodb.net/";
-            string databaseName = "AnnaKijlstra";
-            dbHandler = new MongoDb(connectionString, databaseName);
-           
             //jsonHandler = new Json(); // If tasked to save to json file on local disk - uncomment
             //LoadQuestionPacks(); // - " -
 
@@ -148,7 +149,7 @@ namespace Labb3.ViewModel
 
         private async void ExitGame(object obj)
         {
-            // await SaveQuestionPacksAsync(); //JSON funcionality
+            // await SaveQuestionPacksAsync(); //If tasked to save to json file on local disk - uncomment
             await SaveDataAsync();
             Application.Current.Shutdown();
         }

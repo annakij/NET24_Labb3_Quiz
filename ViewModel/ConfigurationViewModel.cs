@@ -22,17 +22,8 @@ namespace Labb3.ViewModel
         public QuestionPackViewModel? ActivePack { get => mainWindowViewModel.ActivePack; }
         public Visibility EditorVisibility => ActiveQuestion == null ? Visibility.Collapsed : Visibility.Visible;
 
-        private ObservableCollection<Category> _categories;
+        public ObservableCollection<Category> Categories { get => mainWindowViewModel.Categories; }
 
-        public ObservableCollection<Category> Categories
-        {
-            get => _categories;
-            set
-            {
-                _categories = value;
-                RaisePropertyChanged(nameof(Categories));
-            }
-        }
         private string _newCategory;
         public string NewCategory
         {
@@ -92,7 +83,6 @@ namespace Labb3.ViewModel
             this.mainWindowViewModel = mainWindowViewModel;
             IsVisible = Visibility.Visible;
 
-            Categories = new ObservableCollection<Category>(mainWindowViewModel.Categories);
             DifficultyOptions = new ObservableCollection<Difficulty>((Difficulty[])Enum.GetValues(typeof(Difficulty)));
 
             PackOptionsWindowCommand = new DelegateCommand(ShowWindow);
@@ -106,12 +96,14 @@ namespace Labb3.ViewModel
 
         private void RemoveCategory(object obj)
         {
-            if (obj is null) return;
-            else
+            if (obj is Category category && category is null) return;
+
+            if (obj is Category removeCategory)
             {
-                var filter = Builders<Category>.Filter.Eq(c => c.Name, obj);
+                var filter = Builders<Category>.Filter.Eq(c => c.Name, removeCategory.Name);
+
+                Categories.Remove(removeCategory);
                 dbHandler.Categories.DeleteOne(filter);
-                Categories.Remove(SelectedCategory);
 
                 RaisePropertyChanged(nameof(SelectedCategory));
                 RaisePropertyChanged(nameof(Categories));
@@ -145,6 +137,8 @@ namespace Labb3.ViewModel
         }
         private void ShowCategoryWindow(object obj)
         {
+            //Categories = new ObservableCollection<Category>(mainWindowViewModel.Categories);
+
             CategoryDialog categoryDialog = new CategoryDialog
             {
                 DataContext = this,
