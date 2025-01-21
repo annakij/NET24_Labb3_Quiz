@@ -17,9 +17,7 @@ namespace Labb3.ViewModel
     internal class MainWindowViewModel : ViewModelBase
     {
         public MongoDb dbHandler {  get; set; }
-
         private readonly Json jsonHandler;
-
         public ObservableCollection<Category> Categories { get; set; }
         public PlayerViewModel PlayerViewModel { get; }
         public ConfigurationViewModel ConfigurationViewModel { get; }
@@ -88,9 +86,6 @@ namespace Labb3.ViewModel
             PlayerViewModel = new PlayerViewModel(this);
             ConfigurationViewModel = new ConfigurationViewModel(this);
             NewQuestionPack = new QuestionPackViewModel(new QuestionPack());
-
-            //jsonHandler = new Json(); // If tasked to save to json file on local disk - uncomment
-            //LoadQuestionPacks(); // - " -
 
             LoadDataAsync();
 
@@ -177,7 +172,6 @@ namespace Labb3.ViewModel
 
         private async void ExitGame(object obj)
         {
-            // await SaveQuestionPacksAsync(); //If tasked to save to json file on local disk - uncomment
             await SaveDataAsync();
             Application.Current.Shutdown();
         }
@@ -248,41 +242,6 @@ namespace Labb3.ViewModel
                 mainWindow.WindowStyle = WindowStyle.SingleBorderWindow;
                 mainWindow.WindowState = WindowState.Normal;
             }
-        }
-
-        private async void LoadQuestionPacks() //JSON functionality
-        {
-            List<QuestionPack> loadPacks = await jsonHandler.LoadQuestionPacks();
-
-            foreach (var p in loadPacks)
-            {
-                Packs.Add(new QuestionPackViewModel(p));
-            }
-            if (Packs.Any())
-            {
-                ActivePack = Packs.First();
-            }
-            if (ActivePack == null)
-            {
-                ActivePack = new QuestionPackViewModel(new QuestionPack());
-            }
-        }
-
-        public async Task SaveQuestionPacksAsync() // JSON funtionality
-        {
-            List<QuestionPack> packsToSave = Packs.Select(p => new QuestionPack(
-
-                p.Name,
-                p.Difficulty,
-                p.TimeLimitInSeconds,
-                p.Category
-                )
-            {
-                Questions = p.Questions.ToList()
-            }
-            ).ToList();
-
-            await jsonHandler.SaveQuestionPacks(packsToSave);
         }
     }
 }
