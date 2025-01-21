@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Labb3.Dialogs"
+        xmlns:local="clr-namespace:Labb3.Dialogs" 
+        xmlns:viewmodel="clr-namespace:Labb3.ViewModel" 
+        d:DataContext="{d:DesignInstance Type=viewmodel:MainWindowViewModel}"
         mc:Ignorable="d"
-        DataContext="{Binding MainWindowViewModel}"
         Title="New Question Pack" Height="320" Width="250"
         WindowStartupLocation="CenterOwner" ResizeMode="NoResize" WindowStyle="None">
 
@@ -22,9 +23,8 @@
                    Foreground="BlanchedAlmond"
                    FontWeight="DemiBold"/>
             <ComboBox Background="BlanchedAlmond"
-                      Margin="0, 0, 0, 10" 
-                      DataContext="{Binding ConfigurationViewModel}"
-                      ItemsSource="{Binding DifficultyOptions}"
+                      Margin="0, 0, 0, 10"
+                      ItemsSource="{Binding ConfigurationViewModel.DifficultyOptions}"
                       SelectedItem="{Binding NewQuestionPack.Difficulty}"> 
             </ComboBox>
 
@@ -32,10 +32,10 @@
                    Foreground="BlanchedAlmond"
                    FontWeight="DemiBold"/>
             <ComboBox Background="BlanchedAlmond"
-                      Margin="0, 0, 0, 10" 
-                      DataContext="{Binding ConfigurationViewModel}"
+                      Margin="0, 0, 0, 10"
                       ItemsSource="{Binding Categories}" DisplayMemberPath="Name"
-                      SelectedItem="{Binding NewQuestionPack.Category}">
+                      SelectedItem="{Binding NewQuestionPack.Category, Mode=TwoWay}">
+               
             </ComboBox>
 
             <StackPanel Orientation="Horizontal">

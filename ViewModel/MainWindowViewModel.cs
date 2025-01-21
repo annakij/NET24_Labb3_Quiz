@@ -21,7 +21,7 @@ namespace Labb3.ViewModel
 
         private readonly Json jsonHandler;
 
-        public ObservableCollection<QuestionPackViewModel> Packs { get; set; }
+
         public ObservableCollection<Category> Categories { get; set; }
         public PlayerViewModel PlayerViewModel { get; }
         public ConfigurationViewModel ConfigurationViewModel { get; }
@@ -34,6 +34,17 @@ namespace Labb3.ViewModel
         public DelegateCommand SelectModeCommand { get; }
         public DelegateCommand ShowFullscreenCommand { get; }
 
+        private ObservableCollection<QuestionPackViewModel> _packs;
+
+        public ObservableCollection<QuestionPackViewModel> Packs
+        {
+            get => _packs;
+            set
+            {
+                _packs = value;
+                RaisePropertyChanged(nameof(Packs));
+            }
+        }
 
         private QuestionPackViewModel? _newQuestionPack;
         public QuestionPackViewModel? NewQuestionPack
@@ -57,7 +68,12 @@ namespace Labb3.ViewModel
 			set 
 			{ 
 				_activePack = value;
-                _activePack.Category = Categories.FirstOrDefault(c => c.Name == _activePack.Category.Name);
+
+                if (_activePack != null && _activePack.Category != null)
+                {
+                    _activePack.Category = Categories.FirstOrDefault(c => c.Name == _activePack.Category.Name);
+                }
+
 				RaisePropertyChanged();
                 ConfigurationViewModel?.RaisePropertyChanged("ActivePack");
 			}
@@ -78,7 +94,7 @@ namespace Labb3.ViewModel
             //jsonHandler = new Json(); // If tasked to save to json file on local disk - uncomment
             //LoadQuestionPacks(); // - " -
 
-            LoadData();
+            LoadDataAsync();
 
             NewPackWindowCommand = new DelegateCommand(ShowWindow);
             CloseWindowCommand = new DelegateCommand(CloseWindow);
@@ -90,46 +106,60 @@ namespace Labb3.ViewModel
             ShowFullscreenCommand = new DelegateCommand(ShowFullscreen);
         }
 
-        private async void LoadData() 
+        private async void LoadDataAsync() 
         {
             var categories = await dbHandler.Categories.Find(_ => true).ToListAsync();
+            
             Categories = new ObservableCollection<Category>(
                 categories.Select(c => new Category(c.Name)));
 
             var questionPacks = await dbHandler.QuestionPacks.Find(_ => true).ToListAsync();
+            
             Packs = new ObservableCollection<QuestionPackViewModel>(
-            questionPacks.Select(p => new QuestionPackViewModel(p)));
+                questionPacks.Select(p => new QuestionPackViewModel(p)));
 
             ActivePack = Packs.FirstOrDefault();
         }
         private async Task SaveDataAsync()
         {
-            List<QuestionPack> packsToSave = Packs.Select(p => new QuestionPack(
 
+            var packsToSave = Packs.Select(p => new QuestionPack(
                 p.Name,
                 p.Difficulty,
                 p.TimeLimitInSeconds,
-                p.Category
-                )
+                dbHandler.Categories
+                .Find(c => c.Name == p.Category.Name)
+                .FirstOrDefault())
             {
                 Questions = p.Questions.ToList()
-            }
-            ).ToList();
-
+            }).ToList();
+            
             await dbHandler.QuestionPacks.DeleteManyAsync(_ => true);
             await dbHandler.QuestionPacks.InsertManyAsync(packsToSave);
+            
         }
 
         private void SelectMode(object obj)
         {
             if ((string)obj == "PlayMode")
             {
-                ConfigurationViewModel.IsVisible = Visibility.Collapsed;
-                PlayerViewModel.IsVisible = Visibility.Visible;
-                PlayerViewModel.ResultVisibility = Visibility.Hidden;
+                if (ActivePack.Questions.Count() == 0)
+                {
+                    MessageBox.Show(
+                        "It's hard to play a quiz without questions. Try adding some :)",
+                        "Quizinformation",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+                else
+                {
+                    ConfigurationViewModel.IsVisible = Visibility.Collapsed;
+                    PlayerViewModel.IsVisible = Visibility.Visible;
+                    PlayerViewModel.ResultVisibility = Visibility.Hidden;
 
-                PlayerViewModel.StartQuiz(ActivePack.Questions, ActivePack.TimeLimitInSeconds);
-            }   
+                    PlayerViewModel.StartQuiz(ActivePack.Questions, ActivePack.TimeLimitInSeconds);
+                }
+            };
             if ((string)obj == "EditMode")
             {
                 ConfigurationViewModel.IsVisible = Visibility.Visible;
@@ -164,7 +194,13 @@ namespace Labb3.ViewModel
                 NewQuestionPack.Category)));
 
             ActivePack = Packs.Last();
-            RaisePropertyChanged(); 
+            RaisePropertyChanged(nameof(Packs));
+            RaisePropertyChanged(nameof(ActivePack));
+
+            if (ActivePack.Category.Name != null)
+            {
+                ActivePack.Category = dbHandler.Categories.Find(c =>  c.Name == ActivePack.Category.Name).First();
+            }
         }
         private bool CanDeletePack(object? arg)
         {
@@ -178,7 +214,9 @@ namespace Labb3.ViewModel
         private void DeletePack(object obj)
         {
             Packs.Remove(ActivePack);
-            RaisePropertyChanged();
+            ActivePack = Packs.FirstOrDefault();
+
+            RaisePropertyChanged(nameof(ActivePack));
         }
 
         private void CloseWindow(object obj)

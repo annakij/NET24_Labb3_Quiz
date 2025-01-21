@@ -58,9 +58,9 @@ internal class MongoDb
                     },
                     new Question
                     {
-                        Query = "What are the best pets?",
-                        CorrectAnswer = "Dogs",
-                        IncorrectAnswers= [ "Rabbits", "Birds", "Aligators" ]
+                        Query = "What type of animal is connected to IH-Högskolan?",
+                        CorrectAnswer = "Ducks",
+                        IncorrectAnswers= [ "Elephants", "Whales", "Aligators" ]
 
                     }}
             });
